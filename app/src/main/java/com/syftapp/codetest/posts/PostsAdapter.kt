@@ -3,13 +3,14 @@ package com.syftapp.codetest.posts
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.syftapp.codetest.R
 import com.syftapp.codetest.data.model.domain.Post
 import kotlinx.android.synthetic.main.view_post_list_item.view.*
 
 class PostsAdapter(
-    private val data: List<Post>,
+    private var data: List<Post>,
     private val presenter: PostsPresenter
 ) : RecyclerView.Adapter<PostViewHolder>() {
 
@@ -26,6 +27,13 @@ class PostsAdapter(
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         holder.bind(data.get(position))
+    }
+
+    fun setNewItems(posts: List<Post>) {
+        val oldList = this.data
+        this.data = posts
+        val diff = DiffUtil.calculateDiff(DiffUtilCallback(this.data, oldList))
+        diff.dispatchUpdatesTo(this)
     }
 }
 
