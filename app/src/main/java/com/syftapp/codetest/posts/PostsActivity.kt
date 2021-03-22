@@ -74,6 +74,6 @@ class PostsActivity : AppCompatActivity(), PostsView, KoinComponent {
 
     private fun showError(message: String) {
         error.visibility = View.VISIBLE
-        error.setText(message)
+        error.text = message
     }
 }

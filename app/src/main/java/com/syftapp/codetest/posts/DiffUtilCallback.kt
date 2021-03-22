@@ -7,7 +7,7 @@ import com.syftapp.codetest.data.model.domain.Post
     DiffUtilCallback is used to calculate the list objects data difference
  */
 
-internal class DiffUtilCallback (var newList: List<Post>, var oldList: List<Post>): DiffUtil.Callback() {
+internal class DiffUtilCallback (private var newList: List<Post>, private var oldList: List<Post>): DiffUtil.Callback() {
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         return oldList[oldItemPosition].id == newList[newItemPosition].id
     }

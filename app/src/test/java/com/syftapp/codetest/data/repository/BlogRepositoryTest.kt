@@ -13,7 +13,6 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
 import io.reactivex.Single
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 
 class BlogRepositoryTest {

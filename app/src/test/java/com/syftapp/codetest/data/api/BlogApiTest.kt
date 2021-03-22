@@ -4,7 +4,6 @@ import com.syftapp.codetest.data.model.domain.Comment
 import com.syftapp.codetest.data.model.domain.Post
 import com.syftapp.codetest.data.model.domain.User
 import io.mockk.MockKAnnotations
-import io.mockk.mockk
 import io.reactivex.Single
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
@@ -12,8 +11,8 @@ import org.junit.Test
 
 class BlogApiTest {
 
-    lateinit var blogService: StubBlogService
-    lateinit var sut: BlogApi
+    private lateinit var blogService: StubBlogService
+    private lateinit var sut: BlogApi
 
     @Before
     fun setup() {
