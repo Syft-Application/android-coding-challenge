@@ -3,15 +3,24 @@ package com.syftapp.codetest.data.api
 import com.syftapp.codetest.data.model.domain.Comment
 import com.syftapp.codetest.data.model.domain.Post
 import com.syftapp.codetest.data.model.domain.User
+import io.mockk.MockKAnnotations
 import io.mockk.mockk
 import io.reactivex.Single
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Before
 import org.junit.Test
 
 class BlogApiTest {
 
-    private val blogService = mockk<BlogService>()
-    private val sut = BlogApi(blogService)
+    lateinit var blogService: StubBlogService
+    lateinit var sut: BlogApi
+
+    @Before
+    fun setup() {
+        MockKAnnotations.init(this)
+        blogService = StubBlogService()
+        sut = BlogApi(blogService)
+    }
 
     @Test
     fun `get users contains correct domain models`() {

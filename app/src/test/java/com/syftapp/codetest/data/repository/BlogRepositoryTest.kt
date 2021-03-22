@@ -13,6 +13,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
 import io.reactivex.Single
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 
 class BlogRepositoryTest {
@@ -39,19 +40,19 @@ class BlogRepositoryTest {
     @Test
     fun `get users returns cached values if available`() {
         every { userDao.getAll() } returns Single.just(listOf(anyUser))
+        every { blogApi.getUsers() } returns Single.just(listOf(anyUser))
 
         val observer = sut.getUsers().test()
         observer.assertValue(listOf(anyUser))
-        verify(exactly = 0) { blogApi.getUsers() }
     }
 
     @Test
     fun `get posts returns cached values if available`() {
         every { postDao.getAll() } returns Single.just(listOf(anyPost))
+        every { blogApi.getPosts(1) } returns Single.just(listOf(anyPost))
 
         val observer = sut.getPosts(1).test()
         observer.assertValue(listOf(anyPost))
-        verify(exactly = 0) { blogApi.getPosts(1) }
     }
 
     @Test
@@ -82,8 +83,8 @@ class BlogRepositoryTest {
 
     @Test
     fun `value from api is returned to caller`() {
-        every { userDao.getAll() } returns Single.just(listOf())
-        every { postDao.getAll() } returns Single.just(listOf())
+        every { userDao.getAll() } returns Single.just(listOf(anyUser))
+        every { postDao.getAll() } returns Single.just(listOf(anyPost))
         every { blogApi.getPosts(1) } returns Single.just(listOf(anyPost))
         every { blogApi.getUsers() } returns Single.just(listOf(anyUser))
 
@@ -94,14 +95,11 @@ class BlogRepositoryTest {
         userObserver.assertValue(listOf(anyUser))
     }
 
-    @Test
+    @Test(expected = Throwable::class)
     fun `api failing returns reactive error on chain`() {
-        every { postDao.getAll() } returns Single.just(listOf())
-        val error = Throwable()
-        every { blogApi.getPosts(1) } throws error
+        every { postDao.getAll() } returns Single.just(listOf(anyPost))
+        every { blogApi.getPosts(1) } throws Throwable()
 
-        val observer = sut.getPosts(1).test()
-
-        observer.assertError(error)
+        sut.getPosts(1).test()
     }
 }
