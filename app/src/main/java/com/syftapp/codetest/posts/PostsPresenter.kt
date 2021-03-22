@@ -11,9 +11,9 @@ class PostsPresenter(private val getPostsUseCase: GetPostsUseCase) : KoinCompone
     private val compositeDisposable = CompositeDisposable()
     private lateinit var view: PostsView
 
-    fun bind(view: PostsView) {
+    fun bind(view: PostsView, page: Int) {
         this.view = view
-        compositeDisposable.add(loadPosts())
+        compositeDisposable.add(loadPosts(page))
     }
 
     fun unbind() {
@@ -26,7 +26,7 @@ class PostsPresenter(private val getPostsUseCase: GetPostsUseCase) : KoinCompone
         view.render(PostScreenState.PostSelected(post))
     }
 
-    private fun loadPosts() = getPostsUseCase.execute()
+    private fun loadPosts(page: Int) = getPostsUseCase.execute(page)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .doOnSubscribe { view.render(PostScreenState.Loading) }

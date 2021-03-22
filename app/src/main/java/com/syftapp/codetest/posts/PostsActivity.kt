@@ -18,6 +18,7 @@ class PostsActivity : AppCompatActivity(), PostsView, KoinComponent {
     private lateinit var navigation: Navigation
 
     private lateinit var adapter: PostsAdapter
+    private var pageCounter: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +29,7 @@ class PostsActivity : AppCompatActivity(), PostsView, KoinComponent {
         val separator = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         listOfPosts.addItemDecoration(separator)
 
-        presenter.bind(this)
+        presenter.bind(this, ++pageCounter)
     }
 
     override fun onDestroy() {
