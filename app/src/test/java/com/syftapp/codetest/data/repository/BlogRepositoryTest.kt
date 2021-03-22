@@ -49,20 +49,20 @@ class BlogRepositoryTest {
     fun `get posts returns cached values if available`() {
         every { postDao.getAll() } returns Single.just(listOf(anyPost))
 
-        val observer = sut.getPosts().test()
+        val observer = sut.getPosts(1).test()
         observer.assertValue(listOf(anyPost))
-        verify(exactly = 0) { blogApi.getPosts() }
+        verify(exactly = 0) { blogApi.getPosts(1) }
     }
 
     @Test
     fun `posts value fetched from api is inserted to the cache`() {
         every { postDao.getAll() } returns Single.just(listOf())
-        every { blogApi.getPosts() } returns Single.just(listOf(anyPost))
+        every { blogApi.getPosts(1) } returns Single.just(listOf(anyPost))
 
-        sut.getPosts().test()
+        sut.getPosts(1).test()
 
         verify {
-            blogApi.getPosts()
+            blogApi.getPosts(1)
             postDao.insertAll(*listOf(anyPost).toTypedArray())
         }
     }
@@ -84,10 +84,10 @@ class BlogRepositoryTest {
     fun `value from api is returned to caller`() {
         every { userDao.getAll() } returns Single.just(listOf())
         every { postDao.getAll() } returns Single.just(listOf())
-        every { blogApi.getPosts() } returns Single.just(listOf(anyPost))
+        every { blogApi.getPosts(1) } returns Single.just(listOf(anyPost))
         every { blogApi.getUsers() } returns Single.just(listOf(anyUser))
 
-        val postObserver = sut.getPosts().test()
+        val postObserver = sut.getPosts(1).test()
         val userObserver = sut.getUsers().test()
 
         postObserver.assertValue(listOf(anyPost))
@@ -98,9 +98,9 @@ class BlogRepositoryTest {
     fun `api failing returns reactive error on chain`() {
         every { postDao.getAll() } returns Single.just(listOf())
         val error = Throwable()
-        every { blogApi.getPosts() } throws error
+        every { blogApi.getPosts(1) } throws error
 
-        val observer = sut.getPosts().test()
+        val observer = sut.getPosts(1).test()
 
         observer.assertError(error)
     }
