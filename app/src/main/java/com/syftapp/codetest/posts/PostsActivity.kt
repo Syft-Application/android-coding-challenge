@@ -25,7 +25,9 @@ class PostsActivity : AppCompatActivity(), PostsView, KoinComponent {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_posts)
         navigation = Navigation(this)
+        adapter = PostsAdapter(emptyList(), presenter)
 
+        listOfPosts.adapter = adapter
         listOfPosts.layoutManager = LinearLayoutManager(this)
         val separator = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         listOfPosts.addItemDecoration(separator)
@@ -69,8 +71,8 @@ class PostsActivity : AppCompatActivity(), PostsView, KoinComponent {
         // this is a fairly crude implementation, if it was Flowable, it would
         // be better to use DiffUtil and consider notifyRangeChanged, notifyItemInserted, etc
         // to preserve animations on the RecyclerView
-        adapter = PostsAdapter(posts, presenter)
-        listOfPosts.adapter = adapter
+        if(posts.isEmpty()) return
+
         listOfPosts.visibility = View.VISIBLE
     }
 

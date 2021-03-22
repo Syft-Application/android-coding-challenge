@@ -52,18 +52,15 @@ class BlogRepository(
         remote: () -> Single<List<T>>,
         insert: (insertValue: List<T>) -> Completable
     ): Single<List<T>> {
-
-        return local.invoke()
-            .flatMap {
-                if (it.isNotEmpty()) {
-                    Single.just(it)
-                } else {
-                    remote.invoke()
-                        .map { value ->
-                            insert.invoke(value).subscribe()
-                            value
-                        }
-                }
+        // Remote service will invoke if value receive from service save in local database
+        // and then return all the save records from the local database
+        return remote.invoke().flatMap {
+            if(it.isNotEmpty()) {
+                insert.invoke(it).subscribe()
             }
+            local.invoke().flatMap { value ->
+                Single.just(value)
+            }
+        }
     }
 }
