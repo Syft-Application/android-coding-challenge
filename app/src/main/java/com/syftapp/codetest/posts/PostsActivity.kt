@@ -59,7 +59,6 @@ class PostsActivity : AppCompatActivity(), PostsView, KoinComponent {
 
     private fun showLoading() {
         error.visibility = View.GONE
-        listOfPosts.visibility = View.GONE
         loading.visibility = View.VISIBLE
     }
 
@@ -68,12 +67,9 @@ class PostsActivity : AppCompatActivity(), PostsView, KoinComponent {
     }
 
     private fun showPosts(posts: List<Post>) {
-        // this is a fairly crude implementation, if it was Flowable, it would
-        // be better to use DiffUtil and consider notifyRangeChanged, notifyItemInserted, etc
-        // to preserve animations on the RecyclerView
         if(posts.isEmpty()) return
-
-        listOfPosts.visibility = View.VISIBLE
+        adapter.setNewItems(posts)
+        listOfPosts.scrollToPosition(posts.size)
     }
 
     private fun showError(message: String) {
