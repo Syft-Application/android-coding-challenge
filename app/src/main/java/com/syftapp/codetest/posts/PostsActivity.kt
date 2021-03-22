@@ -3,6 +3,7 @@ package com.syftapp.codetest.posts
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.syftapp.codetest.Navigation
@@ -30,6 +31,13 @@ class PostsActivity : AppCompatActivity(), PostsView, KoinComponent {
         listOfPosts.addItemDecoration(separator)
 
         presenter.bind(this, ++pageCounter)
+
+        nestedScrollView.setOnScrollChangeListener {
+                view: NestedScrollView?, _: Int, scrollY: Int, _: Int, _: Int ->
+            if(scrollY == (view?.getChildAt(0)?.measuredHeight?.minus(view.measuredHeight))) {
+                presenter.bind(this, ++pageCounter)
+            }
+        }
     }
 
     override fun onDestroy() {
